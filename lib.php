@@ -339,3 +339,44 @@ function certificate_get_view_actions() {
 function certificate_get_post_actions() {
     return array('received');
 }
+// ============================================================================
+// ========================= AVGERIS CUSTOM FUCTIONS ==========================
+// ============================================================================
+function certificate_get_user_field($fieldid, $USER) {
+		global $DB;
+	   // Get the enrolment end date
+		$row = $DB->get_record('user_info_data',  array('userid' => $USER->id, 'fieldid' => $fieldid));
+		return $row->data;
+}
+
+function certificate_get_course_info($course) {
+		global $DB;
+	   // Get the enrolment end date
+		$row = $DB->get_record('course_protokolo',  array('courseid' => $course->id));
+		return $row;
+}
+
+
+function certificate_get_user_role($course, $USER) {
+		global $DB;
+
+		$sql = 'SELECT archetype
+			FROM {role_assignments} mra, {context} mc, {role} mr
+			WHERE mra.contextid = mc.id
+			 AND mra.roleid = mr.id
+			 AND mc.instanceid = :courseid
+			 AND mra.userid = :userid';
+
+	   // Get the enrolment end date
+	   $userid =$USER->id;
+	    $row = $DB->get_record_sql($sql, array('userid' => $userid, 'courseid' => $course->id));
+		//$row = $DB->get_record('user_info_data',  array('userid' => '1689', 'fieldid' => $fieldid));
+		//echo ($sql);
+		//echo ("courseid:" . $course->id);
+		//echo ("userid:" . $userid);
+		//echo($row->archetype);
+		//die(0);
+		return $row->archetype;
+}
+
+// ============================================================================
